@@ -6,7 +6,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
@@ -15,17 +14,16 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import ForgotPassword from './components/ForgotPassword';
-import AppTheme from '../shared-theme/AppTheme';
-import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon } from './components/CustomIcons';
 import { useNavigate, Link as RouterLink } from "react-router";
 import { useAuth } from './auth';
 import { Alert } from '@mui/material';
 import { useToast } from './context/ToastContext';
-import { Card, SignUpContainer } from './SignUp';
+import { Card } from './shared-theme/Container';
 
 
-export default function SignIn(props: { disableCustomTheme?: boolean }) {
+
+export default function SignIn() {
     const { isLoading, authenticate } = useAuth();
     const navigate = useNavigate();
 
@@ -99,120 +97,115 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     };
 
     return (
-        <AppTheme {...props}>
-            <CssBaseline enableColorScheme />
-            <SignUpContainer direction="column" justifyContent="space-between">
-                <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
-                <Card variant="outlined">
-                    <Typography
-                        component="h1"
-                        variant="h4"
-                        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-                    >
-                        Sign in
-                    </Typography>
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
-                        noValidate
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: '100%',
-                            gap: 2,
-                        }}>
-                        <FormControl>
-                            <FormLabel htmlFor="email">Email</FormLabel>
-                            <TextField
-                                error={emailError}
-                                helperText={emailErrorMessage}
-                                id="email"
-                                type="email"
-                                name="email"
-                                placeholder="your@email.com"
-                                autoComplete="email"
-                                autoFocus
-                                required
-                                fullWidth
-                                variant="outlined"
-                                color={emailError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="password">Password</FormLabel>
-                            <TextField
-                                error={passwordError}
-                                helperText={passwordErrorMessage}
-                                name="password"
-                                placeholder="••••••"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                autoFocus
-                                required
-                                fullWidth
-                                variant="outlined"
-                                color={passwordError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
-                        <ForgotPassword open={open} handleClose={handleClose} />
 
-                        {loginError && (
-                            <Alert severity="error">{loginErrorMessage}</Alert>
-                        )}
-                        <Button
-                            type='submit'
-                            fullWidth
-                            variant="contained"
-                        >
-                            {isLoading ? <progress /> : "Sign in"}
-                        </Button>
-                        <Link
-                            component="button"
-                            type="button"
-                            onClick={handleClickOpen}
-                            variant="body2"
-                            sx={{ alignSelf: 'center' }}
-                        >
-                            Forgot your password?
-                        </Link>
-                    </Box>
-                    <Divider>or</Divider>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            disabled
-                            startIcon={<GoogleIcon />}
-                        >
-                            Sign in with Google
-                        </Button>
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            disabled
-                            startIcon={<FacebookIcon />}
-                        >
-                            Sign in with Facebook
-                        </Button>
-                        <Typography sx={{ textAlign: 'center' }}>
-                            Don&apos;t have an account?{' '}
-                            <Link
-                                component={RouterLink}
-                                to="/signUp"
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
-                            >
-                                Sign up
-                            </Link>
-                        </Typography>
-                    </Box>
-                </Card>
-            </SignUpContainer>
-        </AppTheme>
+        <Card variant="outlined">
+            <Typography
+                component="h1"
+                variant="h4"
+                sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+            >
+                Sign in
+            </Typography>
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                    gap: 2,
+                }}>
+                <FormControl>
+                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <TextField
+                        error={emailError}
+                        helperText={emailErrorMessage}
+                        id="email"
+                        type="email"
+                        name="email"
+                        placeholder="your@email.com"
+                        autoComplete="email"
+                        autoFocus
+                        required
+                        fullWidth
+                        variant="outlined"
+                        color={emailError ? 'error' : 'primary'}
+                    />
+                </FormControl>
+                <FormControl>
+                    <FormLabel htmlFor="password">Password</FormLabel>
+                    <TextField
+                        error={passwordError}
+                        helperText={passwordErrorMessage}
+                        name="password"
+                        placeholder="••••••"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        autoFocus
+                        required
+                        fullWidth
+                        variant="outlined"
+                        color={passwordError ? 'error' : 'primary'}
+                    />
+                </FormControl>
+                <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label="Remember me"
+                />
+                <ForgotPassword open={open} handleClose={handleClose} />
+
+                {loginError && (
+                    <Alert severity="error">{loginErrorMessage}</Alert>
+                )}
+                <Button
+                    type='submit'
+                    fullWidth
+                    variant="contained"
+                >
+                    {isLoading ? <progress /> : "Sign in"}
+                </Button>
+                <Link
+                    component="button"
+                    type="button"
+                    onClick={handleClickOpen}
+                    variant="body2"
+                    sx={{ alignSelf: 'center' }}
+                >
+                    Forgot your password?
+                </Link>
+            </Box>
+            <Divider>or</Divider>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    onClick={() => showToast('This feature has not been implemented.', 'warning')}
+                    startIcon={<GoogleIcon />}
+                >
+                    Sign in with Google
+                </Button>
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    onClick={() => showToast('This feature has not been implemented.', 'warning')}
+                    startIcon={<FacebookIcon />}
+                >
+                    Sign in with Facebook
+                </Button>
+                <Typography sx={{ textAlign: 'center' }}>
+                    Don&apos;t have an account?{' '}
+                    <Link
+                        component={RouterLink}
+                        to="/signUp"
+                        variant="body2"
+                        sx={{ alignSelf: 'center' }}
+                    >
+                        Sign up
+                    </Link>
+                </Typography>
+            </Box>
+        </Card>
     );
 }

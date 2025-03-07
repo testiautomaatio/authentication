@@ -12,8 +12,8 @@
 import { useState, useCallback } from "react";
 import bcrypt from "bcryptjs";
 
-const STORAGE_KEY = "auth_users";
-const AUTH_STORAGE_KEY = "auth_current_user";
+const USERS_KEY = "auth_users";
+const CURRENT_USER_KEY = "auth_current_user";
 const SALT_ROUNDS = 10;
 
 interface User {
@@ -23,33 +23,40 @@ interface User {
 }
 
 function getUsersFromStorage(): User[] {
-    const users = localStorage.getItem(STORAGE_KEY);
+    const users = localStorage.getItem(USERS_KEY);
     return users ? JSON.parse(users) : [];
 }
 
 function saveUsersToStorage(users: User[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
-function getCurrentUserFromStorage(): string | null {
-    return localStorage.getItem(AUTH_STORAGE_KEY);
+function getCurrentUserFromStorage(): User | null {
+    const userId = localStorage.getItem(CURRENT_USER_KEY);
+
+    return getUsersFromStorage()
+        .find(user => user.email.toLowerCase() === userId?.toLowerCase()) ?? null;
 }
 
 function saveCurrentUserToStorage(email: string | null): void {
     if (email) {
-        localStorage.setItem(AUTH_STORAGE_KEY, email);
+        localStorage.setItem(CURRENT_USER_KEY, email);
     } else {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
+        localStorage.removeItem(CURRENT_USER_KEY);
     }
 }
 
+/**
+ * Simulates a delay between the given range of milliseconds
+ * to mimic network latency.
+ */
 async function delay(min: number = 100, max: number = 1000): Promise<void> {
     const ms = Math.floor(Math.random() * (max - min + 1)) + min;
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export function useAuth() {
-    const [currentUser, setCurrentUser] = useState<string | null>(getCurrentUserFromStorage());
+    const [currentUser, setCurrentUser] = useState<User | null>(getCurrentUserFromStorage());
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const isUsernameAvailable = useCallback(async (email: string): Promise<boolean> => {
@@ -97,7 +104,7 @@ export function useAuth() {
                 throw new Error("Invalid email or password");
             }
 
-            setCurrentUser(email);
+            setCurrentUser(user);
             saveCurrentUserToStorage(email);
             return true;
         } finally {
