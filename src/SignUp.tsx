@@ -112,6 +112,7 @@ export default function SignUp() {
             <Box
                 component="form"
                 onSubmit={handleSubmit}
+                noValidate
                 sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
             >
                 <FormControl>
