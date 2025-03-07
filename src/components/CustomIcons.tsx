@@ -2,7 +2,6 @@
  * Source: https://github.com/mui/material-ui/tree/v6.4.6/docs/data/material/getting-started/templates/sign-up
  * License: MIT, https://github.com/mui/material-ui/blob/master/LICENSE
  */
-import * as React from 'react';
 import SvgIcon from '@mui/material/SvgIcon';
 
 export function SitemarkIcon() {
