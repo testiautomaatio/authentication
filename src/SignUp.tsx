@@ -20,9 +20,12 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon } from './components/CustomIcons';
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink, useNavigate } from "react-router";
+import { useAuth } from './auth';
+import { Alert } from '@mui/material';
+import { useToast } from './context/ToastContext';
 
-const Card = styled(MuiCard)(({ theme }) => ({
+export const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     alignSelf: 'center',
@@ -41,7 +44,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
     }),
 }));
 
-const SignUpContainer = styled(Stack)(({ theme }) => ({
+export const SignUpContainer = styled(Stack)(({ theme }) => ({
     height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
     minHeight: '100%',
     padding: theme.spacing(2),
@@ -65,21 +68,54 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props: { disableCustomTheme?: boolean }) {
+    const { isLoading, createUser } = useAuth();
+    const navigate = useNavigate();
+
     const [emailError, setEmailError] = React.useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
     const [passwordError, setPasswordError] = React.useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [nameError, setNameError] = React.useState(false);
     const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+    const [registrationError, setRegistrationError] = React.useState(false);
+    const [registrationErrorMessage, setRegistrationErrorMessage] = React.useState('');
+    const { showToast } = useToast();
 
-    const validateInputs = () => {
-        const email = document.getElementById('email') as HTMLInputElement;
-        const password = document.getElementById('password') as HTMLInputElement;
-        const name = document.getElementById('name') as HTMLInputElement;
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
 
+        const data = new FormData(event.currentTarget);
+        const name = data.get('name') as string;
+        const email = data.get('email') as string;
+        const password = data.get('password') as string;
+
+        handleRegistration(name, email, password)
+    };
+
+    const handleRegistration = async (name: string, email: string, password: string) => {
+
+        setRegistrationError(false);
+        setRegistrationErrorMessage('');
+
+        if (!validateInputs(name, email, password)) {
+            return false;
+        }
+
+        try {
+            await createUser(name, email, password);
+            navigate('/');
+            showToast('Account created successfully', 'success');
+
+        } catch (e) {
+            setRegistrationError(true);
+            setRegistrationErrorMessage((e as Error).message);
+        }
+    };
+
+    const validateInputs = (name: string, email: string, password: string) => {
         let isValid = true;
 
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
             setEmailError(true);
             setEmailErrorMessage('Please enter a valid email address.');
             isValid = false;
@@ -88,7 +124,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             setEmailErrorMessage('');
         }
 
-        if (!password.value || password.value.length < 6) {
+        if (!password || password.length < 6) {
             setPasswordError(true);
             setPasswordErrorMessage('Password must be at least 6 characters long.');
             isValid = false;
@@ -97,7 +133,7 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
             setPasswordErrorMessage('');
         }
 
-        if (!name.value || name.value.length < 1) {
+        if (!name || name.length < 1) {
             setNameError(true);
             setNameErrorMessage('Name is required.');
             isValid = false;
@@ -107,20 +143,6 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
         }
 
         return isValid;
-    };
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (nameError || emailError || passwordError) {
-            event.preventDefault();
-            return;
-        }
-        const data = new FormData(event.currentTarget);
-        console.log({
-            name: data.get('name'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-        });
     };
 
     return (
@@ -190,11 +212,12 @@ export default function SignUp(props: { disableCustomTheme?: boolean }) {
                             control={<Checkbox value="allowExtraEmails" color="primary" />}
                             label="I want to receive updates via email."
                         />
+                        {registrationError && <Alert severity="error">{registrationErrorMessage}</Alert>}
                         <Button
                             type="submit"
                             fullWidth
+                            disabled={isLoading}
                             variant="contained"
-                            onClick={validateInputs}
                         >
                             Sign up
                         </Button>
