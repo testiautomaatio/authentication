@@ -4,7 +4,7 @@
  */
 import Typography from '@mui/material/Typography';
 import { useAuth } from './auth';
-import { Box, Button, List, ListItem, ListItemText } from '@mui/material';
+import { Button } from '@mui/material';
 import { useNavigate } from "react-router";
 import { useToast } from './context/ToastContext';
 import { Card } from './shared-theme/Container';
