@@ -21,6 +21,7 @@ import ForgotPassword from './components/ForgotPassword';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon } from './components/CustomIcons';
+import { Link as RouterLink } from "react-router";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -204,7 +205,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                         <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => alert('Sign in with Google')}
+                            disabled
                             startIcon={<GoogleIcon />}
                         >
                             Sign in with Google
@@ -212,7 +213,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                         <Button
                             fullWidth
                             variant="outlined"
-                            onClick={() => alert('Sign in with Facebook')}
+                            disabled
                             startIcon={<FacebookIcon />}
                         >
                             Sign in with Facebook
@@ -220,7 +221,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                         <Typography sx={{ textAlign: 'center' }}>
                             Don&apos;t have an account?{' '}
                             <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
+                                component={RouterLink}
+                                to="/signUp"
                                 variant="body2"
                                 sx={{ alignSelf: 'center' }}
                             >
