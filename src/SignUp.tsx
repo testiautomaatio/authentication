@@ -121,6 +121,7 @@ export default function SignUp() {
                         name="name"
                         required
                         fullWidth
+                        autoFocus
                         id="name"
                         placeholder="Jon Snow"
                         error={nameError}
