@@ -6,7 +6,7 @@ import { useAuth } from "./auth";
 import { ReactNode } from "react";
 import { ToastProvider } from './context/ToastContext';
 import AppTheme from "./shared-theme/AppTheme";
-import { CssBaseline } from "@mui/material";
+import { Container, CssBaseline } from "@mui/material";
 import { ScreenContainer } from "./shared-theme/Container";
 import ColorModeSelect from "./shared-theme/ColorModeSelect";
 
@@ -15,10 +15,12 @@ export default function App() {
         <ToastProvider>
             <AppTheme>
                 <CssBaseline enableColorScheme />
-                <ScreenContainer direction="column" justifyContent="space-between">
-                    <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
-                    <Router />
-                </ScreenContainer>
+                <Container sx={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <ScreenContainer direction="column" justifyContent="space-between">
+                        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+                        <Router />
+                    </ScreenContainer>
+                </Container>
             </AppTheme>
         </ToastProvider>
     );
