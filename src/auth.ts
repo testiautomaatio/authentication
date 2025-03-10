@@ -15,16 +15,20 @@ import bcrypt from "bcryptjs";
 const USERS_KEY = "auth_users";
 const CURRENT_USER_KEY = "auth_current_user";
 const SALT_ROUNDS = 10;
-
 interface User {
     name: string;
     email: string;
     password: string;
 }
 
+const DEFAULT_USERS: User[] = [
+    { name: "Alice", email: "alice@example.com", password: "$2b$10$qEiSgCJZodS2aKTLlueE/OeXcZ6RTUmiCc92d69dKlV85hN9knT5K" }, // }3jc\xJnQ=E=+Q_y/%Hd311bW#6{_Oyj
+    { name: "Bob", email: "bob@example.com", password: "$2b$10$tHRW5QQCeky6ZY/QUqYFVu/dsUmGg.WP.gjxcZ5F2q9/dGpNxH2Uu" }, // nUL9zA3q=Nt7\N,0?CL&c74U,Ic)0)dN
+];
+
 function getUsersFromStorage(): User[] {
     const users = localStorage.getItem(USERS_KEY);
-    return users ? JSON.parse(users) : [];
+    return users ? JSON.parse(users) : DEFAULT_USERS;
 }
 
 function saveUsersToStorage(users: User[]): void {
