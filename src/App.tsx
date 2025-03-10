@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from "react-router";
+import { Routes, Route, Navigate, BrowserRouter } from "react-router";
 import SignIn from './SignIn'
 import SignUp from './SignUp'
 import Dashboard from "./Dashboard";
@@ -26,7 +26,7 @@ export default function App() {
 
 function Router() {
     return (
-        <HashRouter>
+        <BrowserRouter>
             <Routes>
                 <Route path="/" element={
                     <NoAuth><SignIn /></NoAuth>
@@ -41,7 +41,7 @@ function Router() {
                 } />
                 <Route path="*" element={<NotFound />} />
             </Routes>
-        </HashRouter >
+        </BrowserRouter>
     )
 }
 
