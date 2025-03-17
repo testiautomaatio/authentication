@@ -28,7 +28,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     return (
         <ToastContext.Provider value={{ showToast }}>
             {children}
-            <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
+            <Snackbar open={open} autoHideDuration={10_000} onClose={() => setOpen(false)} key={message}>
                 <Alert onClose={() => setOpen(false)} severity={severity} variant="filled">
                     {message}
                 </Alert>

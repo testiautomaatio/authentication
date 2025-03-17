@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, BrowserRouter } from "react-router";
-import SignIn from './SignIn'
-import SignUp from './SignUp'
+import SignIn from './SignIn';
+import SignUp from './SignUp';
 import Dashboard from "./Dashboard";
 import { useAuth } from "./auth";
 import { ReactNode } from "react";
