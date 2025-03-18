@@ -4,7 +4,7 @@ import SignUp from './SignUp';
 import Dashboard from "./Dashboard";
 import { useAuth } from "./auth";
 import { ReactNode } from "react";
-import { ToastProvider } from './context/ToastContext';
+import { ToastProvider, useToast } from './context/ToastContext';
 import AppTheme from "./shared-theme/AppTheme";
 import { Container, CssBaseline } from "@mui/material";
 import { ScreenContainer } from "./shared-theme/Container";
@@ -62,7 +62,14 @@ function NoAuth({ children }: { children: ReactNode }) {
  */
 function RequireAuth({ children }: { children: ReactNode }) {
     const { currentUser } = useAuth();
-    return currentUser ? children : <Navigate to="/" replace />;
+    const { showToast } = useToast();
+
+    if (currentUser) {
+        return children;
+    }
+
+    showToast("You must be logged in to enter the dashboard", "info");
+    return <Navigate to="/" replace />;
 }
 
 /**
