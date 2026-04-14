@@ -9,8 +9,8 @@
  * - There is no session management or token-based authentication.
  */
 
-import { useState, useCallback } from "react";
 import bcrypt from "bcryptjs";
+import { useCallback, useState } from "react";
 
 const USERS_KEY = "auth_users";
 const CURRENT_USER_KEY = "auth_current_user";
@@ -24,6 +24,8 @@ interface User {
 const DEFAULT_USERS: User[] = [
     { name: "Alice", email: "alice@example.com", password: "$2b$10$qEiSgCJZodS2aKTLlueE/OeXcZ6RTUmiCc92d69dKlV85hN9knT5K" }, // }3jc\xJnQ=E=+Q_y/%Hd311bW#6{_Oyj
     { name: "Bob", email: "bob@example.com", password: "$2b$10$tHRW5QQCeky6ZY/QUqYFVu/dsUmGg.WP.gjxcZ5F2q9/dGpNxH2Uu" }, // nUL9zA3q=Nt7\N,0?CL&c74U,Ic)0)dN
+    { name: "John Doe", email: "john.doe@example.com", password: "$2b$10$baa7Rvp.joEd3OJolW6cBeV657AVl6zQuji0VfXKTpwAhEd6nFux2" }, // AllTestsPass1!,
+    { name: "Jane Doe", email: "jane.doe@example.com", password: "$2b$10$qj/FUiaqg7WxVtfALaLFCeUi1L5RhQBftDwbk7pJ/SZbtgPFcmhd." } // ItWorksOnMyMac1!
 ];
 
 function getUsersFromStorage(): User[] {
@@ -67,8 +69,20 @@ export function useAuth() {
         setIsLoading(true);
         try {
             await delay();
-            const users = getUsersFromStorage();
-            return !users.some(user => user.email.toLowerCase() === email.toLowerCase());
+
+            const found = getUsersFromStorage().find(user => user.email.toLowerCase() === email.toLowerCase());
+
+            if (!found) {
+                return true;
+            }
+
+            if (found.email === email) {
+                console.log("TRACE: registration-exact-email-conflict");
+            } else {
+                console.log("TRACE: registration-case-insensitive-email-conflict");
+            }
+            return false;
+
         } finally {
             setIsLoading(false);
         }
@@ -100,11 +114,19 @@ export function useAuth() {
             const user = users.find(user => user.email.toLowerCase() === email.toLowerCase());
 
             if (!user) {
+                console.log("TRACE: login-email-not-found");
                 throw new Error("Invalid email or password");
+            }
+
+            if (user.email === email) {
+                console.log("TRACE: login-exact-email");
+            } else {
+                console.log("TRACE: login-case-insensitive-email");
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
+                console.log("TRACE: login-incorrect-password");
                 throw new Error("Invalid email or password");
             }
 

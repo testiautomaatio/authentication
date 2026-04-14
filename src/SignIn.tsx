@@ -2,22 +2,22 @@
  * Source: https://github.com/mui/material-ui/tree/v6.4.6/docs/data/material/getting-started/templates/
  * License: MIT, https://github.com/mui/material-ui/blob/master/LICENSE
  */
-import * as React from 'react';
+import { Alert } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
-import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import ForgotPassword from './components/ForgotPassword';
-import { GoogleIcon, FacebookIcon } from './components/CustomIcons';
-import { useNavigate, Link as RouterLink } from "react-router";
+import * as React from 'react';
+import { Link as RouterLink, useNavigate } from "react-router";
 import { useAuth } from './auth';
-import { Alert } from '@mui/material';
+import { FacebookIcon, GoogleIcon } from './components/CustomIcons';
+import ForgotPassword from './components/ForgotPassword';
 import { useToast } from './context/ToastContext';
 import { Card } from './shared-theme/Container';
 
