@@ -28,19 +28,33 @@ const DEFAULT_USERS: User[] = [
     { name: "Jane Doe", email: "jane.doe@example.com", password: "$2b$10$qj/FUiaqg7WxVtfALaLFCeUi1L5RhQBftDwbk7pJ/SZbtgPFcmhd." } // ItWorksOnMyMac1!
 ];
 
-function getUsersFromStorage(): User[] {
-    const users = localStorage.getItem(USERS_KEY);
-    return users ? JSON.parse(users) : DEFAULT_USERS;
+/**
+ * @returns a list of users stored in localStorage (excluding the default users).
+ */
+function getStoredUsers(): User[] {
+    return JSON.parse(localStorage.getItem(USERS_KEY) ?? "[]") as User[];
 }
 
-function saveUsersToStorage(users: User[]): void {
+/**
+ * @returns a combined list of default users and users stored in localStorage.
+ */
+function getUsers(): User[] {
+    return [...getStoredUsers(), ...DEFAULT_USERS];
+}
+
+/**
+ * Saves a new user to localStorage. This does not perform any validation
+ * or hashing, and assumes the caller has already done so.
+ */
+function saveUserToStorage(newUser: User): void {
+    const users = [...getStoredUsers(), newUser];
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
 function getCurrentUserFromStorage(): User | null {
     const userId = localStorage.getItem(CURRENT_USER_KEY);
 
-    return getUsersFromStorage()
+    return getUsers()
         .find(user => user.email.toLowerCase() === userId?.toLowerCase()) ?? null;
 }
 
@@ -70,7 +84,7 @@ export function useAuth() {
         try {
             await delay();
 
-            const found = getUsersFromStorage().find(user => user.email.toLowerCase() === email.toLowerCase());
+            const found = getUsers().find(user => user.email.toLowerCase() === email.toLowerCase());
 
             if (!found) {
                 return true;
@@ -92,15 +106,16 @@ export function useAuth() {
         setIsLoading(true);
         try {
             await delay();
-            const users = getUsersFromStorage();
 
             if (!(await isUsernameAvailable(email))) {
                 throw new Error("Email is already in use");
             }
 
-            const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-            users.push({ name, email: email.toLowerCase(), password: hashedPassword });
-            saveUsersToStorage(users);
+            saveUserToStorage({
+                name,
+                email: email.toLowerCase(),
+                password: await bcrypt.hash(password, SALT_ROUNDS)
+            });
         } finally {
             setIsLoading(false);
         }
@@ -110,7 +125,7 @@ export function useAuth() {
         setIsLoading(true);
         try {
             await delay();
-            const users = getUsersFromStorage();
+            const users = getUsers();
             const user = users.find(user => user.email.toLowerCase() === email.toLowerCase());
 
             if (!user) {
