@@ -81,7 +81,7 @@ export default function SignIn() {
         setPasswordError(false);
         setPasswordErrorMessage('');
 
-        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             setEmailError(true);
             setEmailErrorMessage('Please enter a valid email address.');
             isValid = false;
